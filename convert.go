@@ -1,5 +1,4 @@
-// Package vert generically converts js objects to go values of any type with reflection.
-// Additionally, go functions can be called with js object arguments.
+// Package vert generically convert js objects to go values of any type and calls go functions with js object arguments.
 package vert
 
 import (
