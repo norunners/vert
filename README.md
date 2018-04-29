@@ -3,7 +3,7 @@ vert
 [![GoDoc](https://godoc.org/github.com/norunners/vert?status.svg)](https://godoc.org/github.com/norunners/vert)
 [![Build Status](https://travis-ci.org/norunners/vert.svg?branch=master)](https://travis-ci.org/norunners/vert)
 
-Package `vert` generically convert js objects to go values of any type and calls go functions with js object arguments.
+Package `vert` generically converts js objects to go values of any type and calls go functions with js object arguments.
 
 Install
 -------
@@ -13,9 +13,9 @@ go get github.com/norunners/vert
 
 Converter
 ---------
-Converter converts js objects to go values of any type.
+Converter generically converts js objects to go values of any type.
 ##### Trivial hello world example:
-The js object is converted to a string value and printed.
+The js object is converted to the string value, then printed.
 ```go
 func main() {
     object := js.Global.Get("Object").New("Hello World!")
@@ -28,7 +28,7 @@ func main() {
 ```
 
 ##### Hello world example using struct values:
-The js object is converted to the struct value `Data` and the `Message` field is printed.
+The js object is converted to the `Data` struct value, then the `Message` field is printed.
 ```go
 type Data struct {
     *js.Object
@@ -45,21 +45,21 @@ func main() {
 }
 
 func jsData() *js.Object {
-	data := &Data{Object: js.Global.Get("Object").New()}
-	data.Message = "Hello World!"
-	return data.Object
+	object := js.Global.Get("Object").New()
+	object.Set("Message", "Hello World!")
+	return object
 }
 ```
 
 Function Calls
 --------------
-Func calls go functions with js object arguments.
+Converter calls go functions with js object arguments.
 ##### Trivial hello world example:
-The vert function calls `print` with the string value converted from the js object.
+The converter calls the `print` function with the string value, which was converted from the js object.
 ```go
 func main() {
     object := js.Global.Get("Object").New("Hello World!")
-    function := vert.NewFunc(print)
+    function := vert.New(print)
     function.Call(object)
 }
 
@@ -69,7 +69,7 @@ func print(message string) {
 ```
 
 ##### Hello world example using struct values:
-The vert function calls `print` with the struct value `Data` converted from the js object. 
+The converter calls the `print` function with the `Data` struct value, which was converted from the js object. 
 ```go
 type Data struct {
     *js.Object
@@ -78,7 +78,7 @@ type Data struct {
 
 func main() {
 	object := jsData()
-	function := vert.NewFunc(print)
+	function := vert.New(print)
 	function.Call(object)
 }
 
@@ -87,21 +87,21 @@ func print(data *Data) {
 }
 
 func jsData() *js.Object {
-	data := &Data{Object: js.Global.Get("Object").New()}
-	data.Message = "Hello World!"
-	return data.Object
+	object := js.Global.Get("Object").New()
+	object.Set("Message", "Hello World!")
+	return object
 }
 ```
 
 ##### Addition example adds two numbers and returns the sum:
-This vert function calls `add` with two int arguments and the result is type asserted to an int.
+The converter calls the `add` function with two int arguments and the result is type asserted to an int.
 ```go
 func main() {
     a, b := 39, 3
     objA := js.Global.Get("Object").New(a)
     objB := js.Global.Get("Object").New(b)
 
-    function := vert.NewFunc(add)
+    function := vert.New(add)
     result, _ := function.Call(objA, objB)
     c := result[0].(int)
 

@@ -8,13 +8,16 @@ import (
 )
 
 type Converter struct {
+	val reflect.Value
 	typ reflect.Type
 }
 
-// New creates a new converter which generically converts js objects to go values of any type with reflection.
+// New creates a new converter which generically converts js objects to go values of any type.
+// If the value is a function, it can be called with js object arguments.
+// Note, functions with zero arguments are also allowed.
 func New(value interface{}) *Converter {
-	typ := typeOf(value)
-	return &Converter{typ: typ}
+	val, typ := valueTypeOf(value)
+	return &Converter{val: val, typ: typ}
 }
 
 // Interface converts the given source js object to an empty interface
@@ -22,26 +25,31 @@ func New(value interface{}) *Converter {
 // Note, struct types must embed a js object pointer or be of type js object to allow for conversion.
 // Beneficially, struct types can contain any depth of complex struct types.
 // Note, map keys must be of type string to allow for conversion.
-func (converter *Converter) Interface(src *js.Object) (interface{}, error) {
-	value, err := convert(converter.typ, src)
+func (value *Converter) Interface(src *js.Object) (interface{}, error) {
+	dst, err := convert(value.typ, src)
 	if err != nil {
 		return nil, err
 	}
-	return value.Interface(), nil
+	return dst.Interface(), nil
 }
 
 // Value converts the given source js object to a reflection value.
-func (converter *Converter) Value(src *js.Object) (reflect.Value, error) {
-	return convert(converter.typ, src)
+func (value *Converter) Value(src *js.Object) (reflect.Value, error) {
+	return convert(value.typ, src)
 }
 
-// typeOf returns the reflection type of the given value.
-// Reflection type values are allowed.
-func typeOf(value interface{}) reflect.Type {
-	if typ, ok := value.(reflect.Type); ok {
-		return typ
+// valueTypeOf returns the reflection value and type of the given value.
+// Reflection values or types are allowed.
+// Note, reflection types are not allowed for function calls.
+func valueTypeOf(value interface{}) (reflect.Value, reflect.Type) {
+	if val, ok := value.(reflect.Value); ok {
+		return val, val.Type()
 	}
-	return reflect.TypeOf(value)
+	if typ, ok := value.(reflect.Type); ok {
+		return reflect.Zero(typ), typ
+	}
+	val := reflect.ValueOf(value)
+	return val, val.Type()
 }
 
 // convert recursively handles conversion of any type.

@@ -5,7 +5,7 @@ import (
 )
 
 func TestCallFuncEmpty(t *testing.T) {
-	function := NewFunc(testEmptyFunc)
+	function := New(testEmptyFunc)
 	result, err := function.Call()
 
 	assertNoError(t, err)
@@ -15,7 +15,7 @@ func TestCallFuncEmpty(t *testing.T) {
 func TestCallFuncEmptyWithArg(t *testing.T) {
 	object := newObject("testString")
 
-	function := NewFunc(testEmptyFunc)
+	function := New(testEmptyFunc)
 	result, err := function.Call(object)
 
 	assertNoError(t, err)
@@ -26,7 +26,7 @@ func TestCallFuncString(t *testing.T) {
 	expected := "testString"
 	object := newObject(expected)
 
-	function := NewFunc(testStringFunc)
+	function := New(testStringFunc)
 	result, err := function.Call(object)
 
 	assertNoError(t, err)
@@ -39,7 +39,7 @@ func TestCallFuncStruct(t *testing.T) {
 	expected.text = "testText"
 	object := newObject(expected)
 
-	function := NewFunc(testDataFunc)
+	function := New(testDataFunc)
 	result, err := function.Call(object)
 
 	assertNoError(t, err)
@@ -49,7 +49,7 @@ func TestCallFuncStruct(t *testing.T) {
 }
 
 func TestCallFuncNoArgs(t *testing.T) {
-	function := NewFunc(testDataFunc)
+	function := New(testDataFunc)
 	_, err := function.Call()
 
 	assertError(t, err)
@@ -58,7 +58,7 @@ func TestCallFuncNoArgs(t *testing.T) {
 func TestCallFuncBadConvert(t *testing.T) {
 	object := newObject(42)
 
-	function := NewFunc(testStringFunc)
+	function := New(testStringFunc)
 	_, err := function.Call(object)
 
 	assertError(t, err)

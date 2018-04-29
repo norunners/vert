@@ -27,8 +27,8 @@ func NewFunc(function interface{}) *Func {
 // or there are not enough arguments to satisfy the number of function arguments.
 // Note, the function is called with the arguments in the order given
 // and it is safe to provide more arguments than the number of function arguments.
-func (function *Func) Call(args ...*js.Object) ([]interface{}, error) {
-	argVals, err := function.Values(args...)
+func (function *Converter) Call(args ...*js.Object) ([]interface{}, error) {
+	argVals, err := function.values(args...)
 	if err != nil {
 		return nil, err
 	}
@@ -40,10 +40,10 @@ func (function *Func) Call(args ...*js.Object) ([]interface{}, error) {
 	return interfaces, nil
 }
 
-// Values converts the given js object arguments to a slice of reflection values from the types of the function arguments.
+// values converts the given js object arguments to a slice of reflection values from the types of the function arguments.
 // An error is returned if any argument fails to convert
 // or there are not enough arguments to satisfy the number of function arguments.
-func (function *Func) Values(args ...*js.Object) ([]reflect.Value, error) {
+func (function *Converter) values(args ...*js.Object) ([]reflect.Value, error) {
 	n := function.typ.NumIn()
 	length := len(args)
 	if length < n {
