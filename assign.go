@@ -100,8 +100,6 @@ func assignToBasic(b reflect.Value, i interface{}, t js.Type) (val reflect.Value
 		}
 	}()
 
-	js.ValueOf(i).Type()
-
 	v := reflect.ValueOf(i)
 	val = v.Convert(b.Type())
 	return
