@@ -5,7 +5,7 @@ Package `vert` provides WebAssembly interop between Go and JS values.
 
 ## Install
 ```bash
-GOARCH=wasm GOOS=js go get github.com/norunners/vert
+GOOS=js GOARCH=wasm go get github.com/norunners/vert
 ```
 
 ## Examples
