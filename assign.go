@@ -114,6 +114,8 @@ func assignToValue(rv reflect.Value, jv js.Value) (reflect.Value, error) {
 		return assignToMap(rv, jv)
 	case reflect.Slice:
 		return assignToSlice(rv, jv)
+	case reflect.Array:
+		return assignToArray(rv, jv)
 	default:
 		return zero, &InvalidAssignmentError{Type: jv.Type(), Kind: k}
 	}
@@ -195,6 +197,28 @@ func assignToSlice(s reflect.Value, jv js.Value) (reflect.Value, error) {
 			continue
 		}
 		s = reflect.Append(s, e)
+	}
+	return s, nil
+}
+
+func assignToArray(s reflect.Value, jv js.Value) (reflect.Value, error) {
+	t := s.Type()
+	n := jv.Length()
+	et := t.Elem()
+	if !s.CanAddr() {
+		s = reflect.New(reflect.ArrayOf(n, t.Elem())).Elem()
+	}
+	for i := 0; i < n; i++ {
+		e := reflect.New(et).Elem()
+		je := jv.Index(i)
+		e, err := assignTo(e, je)
+		if err != nil {
+			return zero, err
+		}
+		if e == zero {
+			continue
+		}
+		s.Index(i).Set(e)
 	}
 	return s, nil
 }

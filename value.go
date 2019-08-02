@@ -40,8 +40,10 @@ func valueOf(v reflect.Value) js.Value {
 	switch v.Kind() {
 	case reflect.Ptr, reflect.Interface:
 		return valueOfPointerOrInterface(v)
-	case reflect.Slice, reflect.Array:
-		return valueOfSliceOrArray(v)
+	case reflect.Slice:
+		return valueOfSlice(v)
+	case reflect.Array:
+		return valueOfArray(v)
 	case reflect.Map:
 		return valueOfMap(v)
 	case reflect.Struct:
@@ -59,11 +61,16 @@ func valueOfPointerOrInterface(v reflect.Value) js.Value {
 	return valueOf(v.Elem())
 }
 
-// valueOfSliceOrArray returns a new array object value.
-func valueOfSliceOrArray(v reflect.Value) js.Value {
+// valueOfSlice returns a new array object value.
+func valueOfSlice(v reflect.Value) js.Value {
 	if v.IsNil() {
 		return null
 	}
+	return valueOfArray(v)
+}
+
+// valueOfArray returns a new array object value.
+func valueOfArray(v reflect.Value) js.Value {
 	a := array.New()
 	n := v.Len()
 	for i := 0; i < n; i++ {
