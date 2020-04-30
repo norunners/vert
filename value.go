@@ -106,6 +106,9 @@ func valueOfStruct(v reflect.Value) js.Value {
 func nameOf(sf reflect.StructField) string {
 	name := sf.Tag.Get("js")
 	if name == "" {
+		name = sf.Tag.Get("json")
+	}
+	if name == "" {
 		return sf.Name
 	}
 	return name
