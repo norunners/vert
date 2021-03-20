@@ -44,13 +44,11 @@ func TestAssignToAllFields(t *testing.T) {
 			t.Run(name, func(t *testing.T) {
 				ex := f.Interface()
 				ac := acAll.Field(i).Interface()
-
 				v := ValueOf(ex)
 				err := v.AssignTo(&ac)
 				if err != nil {
 					t.Errorf("unexpected error: %+v\n", err)
 				}
-
 				if !reflect.DeepEqual(ex, ac) {
 					t.Errorf("expected: %+v but found: %+v\n", ex, ac)
 				}
@@ -138,6 +136,12 @@ type All struct {
 	EmptySlice []Small
 	NilSlice   []Small
 
+	Array      [2]Small
+	ArrayP     [2]*Small
+	PArray     *[2]Small
+	PArrayP    *[2]*Small
+	EmptyArray [0]Small
+
 	StringSlice []string
 	ByteSlice   []byte
 
@@ -186,6 +190,10 @@ var allValue = All{
 	Slice:       []Small{{Tag: "tag20", Field: "field20"}, {Tag: "tag21", Field: "field21"}},
 	SliceP:      []*Small{{Tag: "tag22", Field: "field22"}, {Tag: "tag23", Field: "field23"}},
 	EmptySlice:  []Small{},
+	Array:       [2]Small{{Tag: "tag20", Field: "field20"}, {Tag: "tag21", Field: "field21"}},
+	ArrayP:      [2]*Small{{Tag: "tag20", Field: "field20"}, {Tag: "tag21", Field: "field21"}},
+	PArray:      &[2]Small{{Tag: "tag20", Field: "field20"}, {Tag: "tag21", Field: "field21"}},
+	PArrayP:     &[2]*Small{{Tag: "tag20", Field: "field20"}, {Tag: "tag21", Field: "field21"}},
 	StringSlice: []string{"str24", "str25", "str26"},
 	ByteSlice:   []byte{27, 28, 29},
 	Small:       Small{Tag: "tag30", Field: "field30"},
@@ -244,7 +252,6 @@ func TestInvalidAssignmentJsToGoError(t *testing.T) {
 		{"object to int", object.New(), 0, &InvalidAssignmentError{Type: js.TypeObject, Kind: reflect.Int}},
 		{"object to float", object.New(), 0.0, &InvalidAssignmentError{Type: js.TypeObject, Kind: reflect.Float64}},
 		{"object to complex", object.New(), 0i, &InvalidAssignmentError{Type: js.TypeObject, Kind: reflect.Complex128}},
-		{"object to array", object.New(), [0]struct{}{}, &InvalidAssignmentError{Type: js.TypeObject, Kind: reflect.Array}},
 		{"object to channel", object.New(), make(chan struct{}), &InvalidAssignmentError{Type: js.TypeObject, Kind: reflect.Chan}},
 		{"object to func", object.New(), func() {}, &InvalidAssignmentError{Type: js.TypeObject, Kind: reflect.Func}},
 		{"object to nil interface", object.New(), i, &InvalidAssignmentError{Type: js.TypeObject, Kind: reflect.Interface}},
