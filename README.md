@@ -1,6 +1,5 @@
 # vert
-[![GoDoc](https://godoc.org/github.com/norunners/vert?status.svg)](https://godoc.org/github.com/norunners/vert)
-[![Build Status](https://travis-ci.org/norunners/vert.svg?branch=master)](https://travis-ci.org/norunners/vert)
+[![Go Reference](https://pkg.go.dev/badge/github.com/norunners/vert.svg)](https://pkg.go.dev/github.com/norunners/vert)
 
 Package `vert` provides WebAssembly interop between Go and JS values.
 
