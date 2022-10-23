@@ -27,7 +27,7 @@ func (v Value) JSValue() js.Value {
 // ValueOf returns the Go value as a new value.
 func ValueOf(i interface{}) Value {
 	switch i.(type) {
-	case nil, js.Value, js.Wrapper:
+	case nil, js.Value:
 		return Value{Value: js.ValueOf(i)}
 	default:
 		v := reflect.ValueOf(i)
