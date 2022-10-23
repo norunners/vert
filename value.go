@@ -38,6 +38,10 @@ func ValueOf(i interface{}) Value {
 
 // valueOf recursively returns a new value.
 func valueOf(v reflect.Value) js.Value {
+	if t, ok := v.Interface().(time.Time); ok {
+		dateConstructor := js.Global().Get("Date")
+		return dateConstructor.New(t.Format(time.RFC3339))
+	}
 	switch v.Kind() {
 	case reflect.Ptr, reflect.Interface:
 		return valueOfPointerOrInterface(v)
@@ -48,10 +52,6 @@ func valueOf(v reflect.Value) js.Value {
 	case reflect.Struct:
 		return valueOfStruct(v)
 	default:
-		if t, ok := v.Interface().(time.Time); ok {
-			dateConstructor := js.Global().Get("Date")
-			return dateConstructor.New(t.Format(time.RFC3339))
-		}
 		return js.ValueOf(v.Interface())
 	}
 }
