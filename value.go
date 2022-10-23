@@ -6,6 +6,7 @@ package vert
 import (
 	"reflect"
 	"syscall/js"
+	"time"
 )
 
 var (
@@ -47,6 +48,10 @@ func valueOf(v reflect.Value) js.Value {
 	case reflect.Struct:
 		return valueOfStruct(v)
 	default:
+		if t, ok := v.Interface().(time.Time); ok {
+			dateConstructor := js.Global().Get("Date")
+			return dateConstructor.New(t.Format(time.RFC3339))
+		}
 		return js.ValueOf(v.Interface())
 	}
 }
