@@ -14,7 +14,7 @@ func TestValueOfTime(t *testing.T) {
 
 	jsVal := ValueOf(now)
 
-	// cut of the timezone information, because seconds precision is sufficient for this test
+	// cut off the timezone information, because second's precision is sufficient for this test
 	jsValIsoString := jsVal.Call("toISOString").String()
 	jsValIsoString = jsValIsoString[:isoStringLength]
 
